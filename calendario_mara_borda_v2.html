@@ -1,0 +1,395 @@
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+.root{background:#FDF8E1;font-family:'Inter',sans-serif;padding:1.5rem;color:#2C2C2A;min-width:660px}
+.hdr{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:8px}
+.brand{display:flex;align-items:center;gap:10px}
+.brand-monogram{width:40px;height:40px;border-radius:50%;background:#2C2C2A;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:14px;font-weight:700;color:#FDF8E1;flex-shrink:0}
+.brand-name{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;color:#2C2C2A;line-height:1.1}
+.brand-sub{font-size:11px;color:#888780;letter-spacing:0.07em;text-transform:uppercase;margin-top:2px}
+.month-nav{display:flex;align-items:center;gap:10px}
+.nav-btn{width:30px;height:30px;border-radius:6px;border:0.5px solid #D3D1C7;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#5F5E5A;font-size:16px;transition:all 0.15s}
+.nav-btn:hover{background:#2C2C2A;color:#FDF8E1;border-color:#2C2C2A}
+.month-label{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:#2C2C2A;min-width:130px;text-align:center}
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:1.25rem}
+.stat-card{background:white;border-radius:8px;border:0.5px solid #D3D1C7;padding:10px 12px;cursor:pointer;transition:all 0.15s;position:relative}
+.stat-card.active{border:1.5px solid #2C2C2A}
+.stat-card:hover{border-color:#888780}
+.stat-dot{width:8px;height:8px;border-radius:50%;margin-bottom:6px}
+.stat-num{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;line-height:1;margin-bottom:2px}
+.stat-lbl{font-size:11px;color:#888780;text-transform:uppercase;letter-spacing:0.05em}
+.stat-check{position:absolute;top:8px;right:8px;font-size:14px;color:#2C2C2A;opacity:0}
+.stat-card.active .stat-check{opacity:1}
+.cal-grid-wrap{background:white;border-radius:10px;border:0.5px solid #D3D1C7;overflow:hidden;margin-bottom:1.25rem}
+.cal-dow{display:grid;grid-template-columns:repeat(7,1fr);background:#F1EFE8}
+.cal-dow-cell{font-size:11px;font-weight:600;text-align:center;padding:8px 4px;color:#888780;text-transform:uppercase;letter-spacing:0.06em}
+.cal-days{display:grid;grid-template-columns:repeat(7,1fr)}
+.cal-day{min-height:72px;padding:6px 6px 4px;border-right:0.5px solid #D3D1C7;border-bottom:0.5px solid #D3D1C7;cursor:pointer;transition:background 0.1s;vertical-align:top}
+.cal-day:nth-child(7n){border-right:none}
+.cal-day.other-month{background:#F8F6EC}
+.cal-day.today{background:#FFFBF0}
+.cal-day:hover{background:#FFFDF5}
+.cal-day.selected{background:#FDF4CC}
+.day-num{font-size:13px;font-weight:600;color:#2C2C2A;margin-bottom:4px;display:inline-block}
+.cal-day.today .day-num{background:#2C2C2A;color:#FDF8E1;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:12px}
+.cal-day.other-month .day-num{color:#B4B2A9}
+.day-dots{display:flex;flex-wrap:wrap;gap:2px;margin-top:2px}
+.day-dot{height:5px;border-radius:2px;flex:1;min-width:5px;max-width:20px}
+.panel{background:white;border-radius:10px;border:0.5px solid #D3D1C7;overflow:hidden;margin-bottom:1.25rem}
+.panel-hdr{background:#F1EFE8;padding:10px 14px;display:flex;align-items:center;justify-content:space-between}
+.panel-title{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:#2C2C2A}
+.panel-close{background:transparent;border:none;cursor:pointer;color:#888780;font-size:18px;padding:0;line-height:1;display:flex;align-items:center}
+.panel-close:hover{color:#2C2C2A}
+.flow-hdr-row{display:grid;grid-template-columns:170px 1fr 90px 90px 80px 64px;background:#F8F6EC;border-bottom:0.5px solid #D3D1C7}
+.flow-hdr-cell{padding:7px 10px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:#888780;border-right:0.5px solid #D3D1C7}
+.flow-hdr-cell:last-child{border-right:none}
+.flow-row{display:grid;grid-template-columns:170px 1fr 90px 90px 80px 64px;border-bottom:0.5px solid #D3D1C7;align-items:stretch;transition:background 0.1s}
+.flow-row:last-child{border-bottom:none}
+.flow-row:hover{background:#FFFDF5}
+.flow-cell{padding:11px 10px;font-size:12px;border-right:0.5px solid #D3D1C7;display:flex;flex-direction:column;gap:3px}
+.flow-cell:last-child{border-right:none;align-items:center;justify-content:center;flex-direction:row;gap:6px}
+.fc-name{font-family:'Playfair Display',serif;font-size:13px;font-weight:700;color:#2C2C2A;line-height:1.2}
+.plat-pill{display:inline-flex;align-items:center;gap:3px;padding:1px 7px;border-radius:8px;font-size:10px;font-weight:500;width:fit-content;margin-top:2px}
+.p-ig{background:#FAEEDA;color:#854F0B}
+.p-fb{background:#E6F1FB;color:#185FA5}
+.p-li{background:#E6F1FB;color:#0C447C}
+.p-tk{background:#EEEDFE;color:#3C3489}
+.p-yt{background:#FCEBEB;color:#A32D2D}
+.p-tw{background:#E1F5EE;color:#085041}
+.step-lbl{font-size:10px;color:#888780;text-transform:uppercase;letter-spacing:0.05em}
+.step-val{font-size:12px;font-weight:700;color:#2C2C2A;font-family:'Playfair Display',serif}
+.step-sub{font-size:11px;color:#5F5E5A}
+.st-pill{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:10px;font-size:10px;font-weight:600;width:fit-content;margin-top:3px}
+.s-pend{background:#F1EFE8;color:#5F5E5A}
+.s-edit{background:#FAEEDA;color:#854F0B}
+.s-apro{background:#EAF3DE;color:#3B6D11}
+.s-publ{background:#EEEDFE;color:#3C3489}
+.notes-txt{font-size:11px;color:#5F5E5A;line-height:1.3}
+.icon-btn{width:28px;height:28px;border-radius:6px;border:0.5px solid #D3D1C7;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all 0.15s;flex-shrink:0}
+.icon-btn.edit:hover{background:#FAEEDA;border-color:#EF9F27;color:#854F0B}
+.icon-btn.del:hover{background:#FCEBEB;border-color:#F09595;color:#A32D2D}
+.add-row{padding:10px 14px;display:flex;align-items:center;gap:6px;font-size:12px;color:#888780;cursor:pointer;border-top:0.5px dashed #D3D1C7;transition:background 0.15s}
+.add-row:hover{background:#FFFDF5;color:#2C2C2A}
+.empty-day{padding:20px;text-align:center;font-size:13px;color:#B4B2A9}
+.modal-wrap{display:none;min-height:500px;background:rgba(44,44,42,0.3);align-items:flex-start;justify-content:center;padding-top:30px;margin-bottom:1rem}
+.modal-wrap.open{display:flex}
+.modal{background:#FDF8E1;border-radius:12px;border:0.5px solid #D3D1C7;padding:1.25rem;width:490px;max-width:95%}
+.modal-title{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:#2C2C2A;margin-bottom:1rem}
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.fg-full{grid-column:1/-1}
+.flbl{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:#888780;display:block;margin-bottom:3px}
+.finp{font-family:'Inter',sans-serif;font-size:12px;padding:7px 9px;border-radius:6px;border:0.5px solid #D3D1C7;background:white;color:#2C2C2A;outline:none;width:100%;transition:border-color 0.15s}
+.finp:focus{border-color:#888780}
+.mact{display:flex;gap:8px;margin-top:1rem;justify-content:space-between;align-items:center}
+.mact-right{display:flex;gap:8px}
+.btn-c{padding:7px 16px;border-radius:6px;border:0.5px solid #D3D1C7;background:transparent;font-family:'Inter',sans-serif;font-size:12px;cursor:pointer;color:#5F5E5A}
+.btn-c:hover{border-color:#888780}
+.btn-s{padding:7px 16px;border-radius:6px;border:none;background:#2C2C2A;color:#FDF8E1;font-family:'Inter',sans-serif;font-size:12px;cursor:pointer;font-weight:500}
+.btn-del{padding:7px 14px;border-radius:6px;border:0.5px solid #F09595;background:transparent;font-family:'Inter',sans-serif;font-size:12px;cursor:pointer;color:#A32D2D;display:none;align-items:center;gap:5px}
+.btn-del.visible{display:flex}
+.btn-del:hover{background:#FCEBEB}
+.modal-mode-badge{font-size:10px;padding:3px 8px;border-radius:6px;background:#FAEEDA;color:#854F0B;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;display:inline-block}
+</style>
+
+<div class="root">
+<h2 style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">Calendario editorial Mara Borda</h2>
+
+<div class="hdr">
+  <div class="brand">
+    <div class="brand-monogram">MB</div>
+    <div>
+      <div class="brand-name">Mara Borda</div>
+      <div class="brand-sub">Calendario Editorial</div>
+    </div>
+  </div>
+  <div class="month-nav">
+    <button class="nav-btn" onclick="changeMonth(-1)"><i class="ti ti-chevron-left"></i></button>
+    <div class="month-label" id="monthLabel"></div>
+    <button class="nav-btn" onclick="changeMonth(1)"><i class="ti ti-chevron-right"></i></button>
+  </div>
+</div>
+
+<div class="stats-row">
+  <div class="stat-card" id="sc-pend" onclick="toggleFilter('Pendiente','sc-pend')">
+    <div class="stat-dot" style="background:#B4B2A9"></div>
+    <div class="stat-num" id="sn-pend" style="color:#5F5E5A">0</div>
+    <div class="stat-lbl">Pendiente</div>
+    <i class="ti ti-check stat-check"></i>
+  </div>
+  <div class="stat-card" id="sc-edit" onclick="toggleFilter('En edición','sc-edit')">
+    <div class="stat-dot" style="background:#EF9F27"></div>
+    <div class="stat-num" id="sn-edit" style="color:#854F0B">0</div>
+    <div class="stat-lbl">En edición</div>
+    <i class="ti ti-check stat-check"></i>
+  </div>
+  <div class="stat-card" id="sc-apro" onclick="toggleFilter('Aprobado','sc-apro')">
+    <div class="stat-dot" style="background:#639922"></div>
+    <div class="stat-num" id="sn-apro" style="color:#3B6D11">0</div>
+    <div class="stat-lbl">Aprobado</div>
+    <i class="ti ti-check stat-check"></i>
+  </div>
+  <div class="stat-card" id="sc-publ" onclick="toggleFilter('Publicado','sc-publ')">
+    <div class="stat-dot" style="background:#7F77DD"></div>
+    <div class="stat-num" id="sn-publ" style="color:#3C3489">0</div>
+    <div class="stat-lbl">Publicado</div>
+    <i class="ti ti-check stat-check"></i>
+  </div>
+</div>
+
+<div class="cal-grid-wrap">
+  <div class="cal-dow">
+    <div class="cal-dow-cell">Lun</div><div class="cal-dow-cell">Mar</div><div class="cal-dow-cell">Mié</div>
+    <div class="cal-dow-cell">Jue</div><div class="cal-dow-cell">Vie</div><div class="cal-dow-cell">Sáb</div><div class="cal-dow-cell">Dom</div>
+  </div>
+  <div class="cal-days" id="calDays"></div>
+</div>
+
+<div class="panel" id="flowPanel" style="display:none">
+  <div class="panel-hdr">
+    <div class="panel-title" id="flowPanelTitle">Flujo de trabajo</div>
+    <button class="panel-close" onclick="closePanel()"><i class="ti ti-x"></i></button>
+  </div>
+  <div class="flow-hdr-row">
+    <div class="flow-hdr-cell">Campaña</div>
+    <div class="flow-hdr-cell">Entrega → Edición → Aprobación → Publicación</div>
+    <div class="flow-hdr-cell">Aprob.</div>
+    <div class="flow-hdr-cell">Public.</div>
+    <div class="flow-hdr-cell">Notas</div>
+    <div class="flow-hdr-cell"></div>
+  </div>
+  <div id="flowRows"></div>
+  <div class="add-row" onclick="openModal(null)">
+    <i class="ti ti-plus" style="font-size:14px"></i> Agregar publicación
+  </div>
+</div>
+
+<div class="modal-wrap" id="modalWrap">
+  <div class="modal">
+    <div id="modalBadge" class="modal-mode-badge" style="display:none">Editando</div>
+    <div class="modal-title" id="modalTitle">Nueva publicación</div>
+    <div class="fg">
+      <div class="fg-full"><label class="flbl">Nombre de campaña</label><input class="finp" id="f-camp" placeholder="Ej. Lanzamiento Verano"></div>
+      <div><label class="flbl">Plataforma</label>
+        <select class="finp" id="f-plat">
+          <option>Instagram</option><option>Facebook</option><option>LinkedIn</option>
+          <option>TikTok</option><option>YouTube</option><option>X / Twitter</option>
+        </select>
+      </div>
+      <div><label class="flbl">Estado</label>
+        <select class="finp" id="f-stat">
+          <option>Pendiente</option><option>En edición</option><option>Aprobado</option><option>Publicado</option>
+        </select>
+      </div>
+      <div><label class="flbl">Fecha de entrega</label><input class="finp" id="f-del" type="date"></div>
+      <div><label class="flbl">Período de edición</label><input class="finp" id="f-ed" placeholder="Ej. 8–12 jul"></div>
+      <div><label class="flbl">Fecha de aprobación</label><input class="finp" id="f-app" type="date"></div>
+      <div><label class="flbl">Fecha de publicación</label><input class="finp" id="f-pub" type="date"></div>
+      <div class="fg-full"><label class="flbl">Notas rápidas</label><input class="finp" id="f-notes" placeholder="Detalles..."></div>
+    </div>
+    <div class="mact">
+      <button class="btn-del" id="btnDelete" onclick="deleteEntry()"><i class="ti ti-trash" style="font-size:13px"></i> Eliminar</button>
+      <div class="mact-right">
+        <button class="btn-c" onclick="closeModal()">Cancelar</button>
+        <button class="btn-s" onclick="saveEntry()">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+const MONTHS=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+const MON_S=['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+const SDOT={'Pendiente':'#B4B2A9','En edición':'#EF9F27','Aprobado':'#639922','Publicado':'#7F77DD'};
+const SCLS={'Pendiente':'s-pend','En edición':'s-edit','Aprobado':'s-apro','Publicado':'s-publ'};
+const PCLS={'Instagram':'p-ig','Facebook':'p-fb','LinkedIn':'p-li','TikTok':'p-tk','YouTube':'p-yt','X / Twitter':'p-tw'};
+
+const today=new Date();
+let curYear=today.getFullYear(),curMonth=today.getMonth();
+let activeFilter=null,selectedDay=null,editingIdx=null;
+
+let entries=[
+  {campaign:'Lanzamiento Verano',platform:'Instagram',delivery:'2025-07-08',editPeriod:'8–12 jul',approval:'2025-07-13',publish:'2025-07-15',notes:'Colores cálidos, carrusel',status:'En edición'},
+  {campaign:'Oferta Socios',platform:'Facebook',delivery:'2025-07-10',editPeriod:'10–13 jul',approval:'2025-07-14',publish:'2025-07-16',notes:'CTA a landing page',status:'Aprobado'},
+  {campaign:'Reporte Impacto Q2',platform:'LinkedIn',delivery:'2025-07-05',editPeriod:'5–8 jul',approval:'2025-07-09',publish:'2025-07-10',notes:'Versión PDF adjunta',status:'Publicado'},
+  {campaign:'Reto #SaborDurazno',platform:'TikTok',delivery:'2025-07-14',editPeriod:'14–18 jul',approval:'2025-07-19',publish:'2025-07-21',notes:'Máx 30s, música trending',status:'Pendiente'},
+  {campaign:'Tutorial Producto',platform:'YouTube',delivery:'2025-07-18',editPeriod:'18–22 jul',approval:'2025-07-23',publish:'2025-07-25',notes:'Subtítulos EN y ES',status:'Pendiente'},
+  {campaign:'Opinión Sector IA',platform:'X / Twitter',delivery:'2025-07-12',editPeriod:'12–14 jul',approval:'2025-07-15',publish:'2025-07-16',notes:'Thread 5 tweets',status:'En edición'},
+  {campaign:'Flash Sale Agosto',platform:'Instagram',delivery:'2025-08-01',editPeriod:'1–4 ago',approval:'2025-08-05',publish:'2025-08-07',notes:'Descuento 30%',status:'Pendiente'},
+  {campaign:'Newsletter Mensual',platform:'LinkedIn',delivery:'2025-07-28',editPeriod:'28–30 jul',approval:'2025-07-31',publish:'2025-08-01',notes:'Resumen del mes',status:'Pendiente'}
+];
+
+function fmt(d){if(!d)return'—';const p=d.split('-');return`${parseInt(p[2])} ${MON_S[parseInt(p[1])-1]}`;}
+
+function getForDate(y,m,d){
+  const ds=`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+  return entries.filter(e=>e.publish===ds||e.delivery===ds||e.approval===ds);
+}
+
+function renderCal(){
+  document.getElementById('monthLabel').textContent=`${MONTHS[curMonth]} ${curYear}`;
+  const first=new Date(curYear,curMonth,1).getDay();
+  const off=(first===0)?6:first-1;
+  const dim=new Date(curYear,curMonth+1,0).getDate();
+  const dip=new Date(curYear,curMonth,0).getDate();
+  let html='';
+  const rows=Math.ceil((off+dim)/7)*7;
+  for(let i=0;i<rows;i++){
+    let d,m,y,oth=false;
+    if(i<off){d=dip-off+i+1;m=curMonth-1;y=curYear;oth=true;}
+    else if(i>=off+dim){d=i-off-dim+1;m=curMonth+1;y=curYear;oth=true;}
+    else{d=i-off+1;m=curMonth;y=curYear;}
+    const isTod=d===today.getDate()&&m===today.getMonth()&&y===today.getFullYear();
+    const isSel=selectedDay&&d===selectedDay.d&&m===selectedDay.m&&y===selectedDay.y;
+    const sts=oth?[]:getForDate(y,m,d).map(e=>e.status);
+    let cls='cal-day'+(oth?' other-month':'')+(isTod?' today':'')+(isSel?' selected':'');
+    const dn=isTod?`<div class="day-num">${d}</div>`:`<span class="day-num">${d}</span>`;
+    let dots='';
+    if(sts.length){dots='<div class="day-dots">'+sts.map(s=>`<div class="day-dot" style="background:${SDOT[s]}"></div>`).join('')+'</div>';}
+    html+=`<div class="${cls}" onclick="selectDay(${y},${m},${d})">${dn}${dots}</div>`;
+  }
+  document.getElementById('calDays').innerHTML=html;
+  updateStats();
+}
+
+function updateStats(){
+  const c={'Pendiente':0,'En edición':0,'Aprobado':0,'Publicado':0};
+  entries.forEach(e=>c[e.status]++);
+  document.getElementById('sn-pend').textContent=c['Pendiente'];
+  document.getElementById('sn-edit').textContent=c['En edición'];
+  document.getElementById('sn-apro').textContent=c['Aprobado'];
+  document.getElementById('sn-publ').textContent=c['Publicado'];
+}
+
+function selectDay(y,m,d){
+  selectedDay={y,m,d};
+  activeFilter=null;
+  ['sc-pend','sc-edit','sc-apro','sc-publ'].forEach(c=>document.getElementById(c).classList.remove('active'));
+  showFlow(getForDate(y,m,d),`${d} de ${MONTHS[m]}`);
+  renderCal();
+}
+
+function toggleFilter(status,cid){
+  const all=['sc-pend','sc-edit','sc-apro','sc-publ'];
+  if(activeFilter===status){activeFilter=null;all.forEach(c=>document.getElementById(c).classList.remove('active'));closePanel();}
+  else{
+    activeFilter=status;selectedDay=null;
+    all.forEach(c=>document.getElementById(c).classList.remove('active'));
+    document.getElementById(cid).classList.add('active');
+    showFlow(entries.filter(e=>e.status===status),`Flujo: ${status}`);
+    renderCal();
+  }
+}
+
+function rowHtml(e,idx){
+  const pc=PCLS[e.platform]||'p-ig';
+  const sc=SCLS[e.status]||'s-pend';
+  return`<div class="flow-row" id="frow-${idx}">
+    <div class="flow-cell"><span class="fc-name">${e.campaign}</span><span class="plat-pill ${pc}">${e.platform}</span></div>
+    <div class="flow-cell" style="flex-direction:row;align-items:center;gap:6px;flex-wrap:wrap">
+      <div style="display:flex;flex-direction:column;gap:1px"><span class="step-lbl">Entrega</span><span class="step-val">${fmt(e.delivery)}</span></div>
+      <span style="color:#B4B2A9;font-size:12px">→</span>
+      <div style="display:flex;flex-direction:column;gap:1px"><span class="step-lbl">Edición</span><span class="step-sub">${e.editPeriod||'—'}</span></div>
+    </div>
+    <div class="flow-cell"><span class="step-lbl">Aprobación</span><span class="step-val">${fmt(e.approval)}</span></div>
+    <div class="flow-cell">
+      <span class="step-lbl">Publicación</span><span class="step-val" style="color:#3C3489">${fmt(e.publish)}</span>
+      <span class="st-pill ${sc}"><span style="width:6px;height:6px;border-radius:50%;background:${SDOT[e.status]};display:inline-block"></span>${e.status}</span>
+    </div>
+    <div class="flow-cell"><span class="notes-txt">${e.notes||'—'}</span></div>
+    <div class="flow-cell">
+      <button class="icon-btn edit" onclick="openModal(${idx})" title="Editar"><i class="ti ti-edit" style="color:#5F5E5A"></i></button>
+      <button class="icon-btn del" onclick="confirmDelete(${idx})" title="Eliminar"><i class="ti ti-trash" style="color:#5F5E5A"></i></button>
+    </div>
+  </div>`;
+}
+
+function showFlow(items,title){
+  const panel=document.getElementById('flowPanel');
+  document.getElementById('flowPanelTitle').textContent=title;
+  if(!items.length){
+    document.getElementById('flowRows').innerHTML=`<div class="empty-day" style="padding:20px;text-align:center;font-size:13px;color:#B4B2A9">Sin publicaciones para esta selección</div>`;
+  } else {
+    document.getElementById('flowRows').innerHTML=items.map(e=>{
+      const idx=entries.indexOf(e);
+      return rowHtml(e,idx);
+    }).join('');
+  }
+  panel.style.display='block';
+}
+
+function refreshPanel(){
+  if(selectedDay){showFlow(getForDate(selectedDay.y,selectedDay.m,selectedDay.d),`${selectedDay.d} de ${MONTHS[selectedDay.m]}`);}
+  else if(activeFilter){showFlow(entries.filter(e=>e.status===activeFilter),`Flujo: ${activeFilter}`);}
+}
+
+function closePanel(){
+  document.getElementById('flowPanel').style.display='none';
+  selectedDay=null;renderCal();
+}
+
+function openModal(idx){
+  editingIdx=idx;
+  const badge=document.getElementById('modalBadge');
+  const title=document.getElementById('modalTitle');
+  const delBtn=document.getElementById('btnDelete');
+  if(idx!==null){
+    const e=entries[idx];
+    document.getElementById('f-camp').value=e.campaign;
+    document.getElementById('f-plat').value=e.platform;
+    document.getElementById('f-stat').value=e.status;
+    document.getElementById('f-del').value=e.delivery||'';
+    document.getElementById('f-ed').value=e.editPeriod||'';
+    document.getElementById('f-app').value=e.approval||'';
+    document.getElementById('f-pub').value=e.publish||'';
+    document.getElementById('f-notes').value=e.notes||'';
+    badge.style.display='inline-block';
+    title.textContent='Editar publicación';
+    delBtn.classList.add('visible');
+  } else {
+    ['f-camp','f-del','f-ed','f-app','f-pub','f-notes'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('f-plat').selectedIndex=0;
+    document.getElementById('f-stat').selectedIndex=0;
+    badge.style.display='none';
+    title.textContent='Nueva publicación';
+    delBtn.classList.remove('visible');
+  }
+  document.getElementById('modalWrap').style.display='flex';
+}
+
+function closeModal(){
+  document.getElementById('modalWrap').style.display='none';
+  editingIdx=null;
+}
+
+function saveEntry(){
+  const g=id=>document.getElementById(id).value.trim();
+  if(!g('f-camp')){document.getElementById('f-camp').focus();return;}
+  const obj={campaign:g('f-camp'),platform:g('f-plat'),delivery:g('f-del'),editPeriod:g('f-ed'),approval:g('f-app'),publish:g('f-pub'),notes:g('f-notes'),status:g('f-stat')};
+  if(editingIdx!==null){entries[editingIdx]=obj;}
+  else{entries.push(obj);}
+  closeModal();
+  renderCal();
+  refreshPanel();
+}
+
+function confirmDelete(){
+  if(editingIdx===null)return;
+  entries.splice(editingIdx,1);
+  closeModal();
+  renderCal();
+  refreshPanel();
+}
+
+function changeMonth(dir){
+  curMonth+=dir;
+  if(curMonth>11){curMonth=0;curYear++;}
+  if(curMonth<0){curMonth=11;curYear--;}
+  closePanel();activeFilter=null;
+  ['sc-pend','sc-edit','sc-apro','sc-publ'].forEach(c=>document.getElementById(c).classList.remove('active'));
+  renderCal();
+}
+
+renderCal();
+</script>
