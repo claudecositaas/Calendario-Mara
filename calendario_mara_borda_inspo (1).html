@@ -1,0 +1,619 @@
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+.root{background:#FDF8E1;font-family:'Inter',sans-serif;padding:1.5rem;color:#2C2C2A}
+.hdr{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:8px}
+.brand{display:flex;align-items:center;gap:10px}
+.monogram{width:40px;height:40px;border-radius:50%;background:#2C2C2A;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:14px;font-weight:700;color:#FDF8E1;flex-shrink:0}
+.brand-name{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;color:#2C2C2A;line-height:1.1}
+.brand-sub{font-size:11px;color:#888780;letter-spacing:0.07em;text-transform:uppercase;margin-top:2px}
+.hdr-right{display:flex;align-items:center;gap:10px}
+.month-nav{display:flex;align-items:center;gap:8px}
+.nav-btn{width:30px;height:30px;border-radius:6px;border:0.5px solid #D3D1C7;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#5F5E5A;font-size:16px;transition:all 0.15s}
+.nav-btn:hover{background:#2C2C2A;color:#FDF8E1;border-color:#2C2C2A}
+.month-label{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:#2C2C2A;min-width:130px;text-align:center}
+.top-btn{display:flex;align-items:center;gap:5px;padding:6px 12px;border-radius:7px;border:0.5px solid #D3D1C7;background:white;cursor:pointer;font-family:'Inter',sans-serif;font-size:12px;color:#5F5E5A;transition:all 0.15s}
+.top-btn:hover{background:#FDF4CC;border-color:#BA7517;color:#854F0B}
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:1.25rem}
+.stat-card{background:white;border-radius:8px;border:0.5px solid #D3D1C7;padding:10px 12px;cursor:pointer;transition:all 0.15s;position:relative}
+.stat-card.active{border:1.5px solid #2C2C2A}
+.stat-card:hover{border-color:#888780}
+.stat-dot{width:8px;height:8px;border-radius:50%;margin-bottom:6px}
+.stat-num{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;line-height:1;margin-bottom:2px}
+.stat-lbl{font-size:11px;color:#888780;text-transform:uppercase;letter-spacing:0.05em}
+.stat-check{position:absolute;top:8px;right:8px;font-size:14px;color:#2C2C2A;opacity:0}
+.stat-card.active .stat-check{opacity:1}
+.cal-grid-wrap{background:white;border-radius:10px;border:0.5px solid #D3D1C7;overflow:hidden;margin-bottom:1.25rem}
+.cal-dow{display:grid;grid-template-columns:repeat(7,1fr);background:#F1EFE8}
+.cal-dow-cell{font-size:11px;font-weight:600;text-align:center;padding:8px 4px;color:#888780;text-transform:uppercase;letter-spacing:0.06em}
+.cal-days{display:grid;grid-template-columns:repeat(7,1fr)}
+.cal-day{min-height:88px;padding:6px 5px 4px;border-right:0.5px solid #D3D1C7;border-bottom:0.5px solid #D3D1C7;cursor:pointer;transition:background 0.1s;vertical-align:top;overflow:hidden}
+.cal-day:nth-child(7n){border-right:none}
+.cal-day.other-month{background:#F8F6EC}
+.cal-day.today{background:#FFFBF0}
+.cal-day:hover{background:#FFFDF5}
+.cal-day.selected{background:#FDF4CC}
+.day-num{font-size:13px;font-weight:600;color:#2C2C2A;display:inline-block;margin-bottom:3px}
+.cal-day.today .day-num{background:#2C2C2A;color:#FDF8E1;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:12px}
+.cal-day.other-month .day-num{color:#B4B2A9}
+.day-items{display:flex;flex-direction:column;gap:2px;margin-top:1px}
+.day-chip{font-size:9.5px;padding:2px 5px;border-radius:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;display:flex;align-items:center;gap:3px;line-height:1.4;font-weight:500}
+.chip-pub{background:#EEEDFE;color:#3C3489}
+.chip-apv{background:#EAF3DE;color:#3B6D11}
+.chip-edi{background:#FDF4CC;color:#7A5200}
+.chip-pen{background:#F1EFE8;color:#5F5E5A}
+.chip-evt{background:#F1EFE8;color:#444441;font-style:italic}
+.more-tag{font-size:9px;color:#888780;padding-left:2px;margin-top:1px}
+.panel{background:white;border-radius:10px;border:0.5px solid #D3D1C7;overflow:hidden;margin-bottom:1.25rem}
+.panel-hdr{background:#F1EFE8;padding:10px 14px;display:flex;align-items:center;justify-content:space-between}
+.panel-title{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:#2C2C2A}
+.panel-close{background:transparent;border:none;cursor:pointer;color:#888780;font-size:18px;padding:0;line-height:1;display:flex;align-items:center}
+.panel-close:hover{color:#2C2C2A}
+/* Flow table — ahora con columna inspo */
+.flow-hdr-row{display:grid;grid-template-columns:150px 1fr 80px 80px 80px 96px 56px;background:#F8F6EC;border-bottom:0.5px solid #D3D1C7}
+.flow-hdr-cell{padding:7px 9px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:#888780;border-right:0.5px solid #D3D1C7}
+.flow-hdr-cell:last-child{border-right:none}
+.flow-row{display:grid;grid-template-columns:150px 1fr 80px 80px 80px 96px 56px;border-bottom:0.5px solid #D3D1C7;align-items:stretch;transition:background 0.1s}
+.flow-row:last-child{border-bottom:none}
+.flow-row:hover{background:#FFFDF5}
+.flow-cell{padding:10px 9px;font-size:12px;border-right:0.5px solid #D3D1C7;display:flex;flex-direction:column;gap:3px}
+.flow-cell:last-child{border-right:none;align-items:center;justify-content:center;flex-direction:row;gap:5px}
+.fc-name{font-family:'Playfair Display',serif;font-size:13px;font-weight:700;color:#2C2C2A;line-height:1.2}
+.plat-pill{display:inline-flex;align-items:center;padding:1px 7px;border-radius:8px;font-size:10px;font-weight:500;width:fit-content;margin-top:2px}
+.p-ig{background:#FAEEDA;color:#854F0B}
+.p-fb{background:#E6F1FB;color:#185FA5}
+.p-li{background:#E6F1FB;color:#0C447C}
+.p-tk{background:#EEEDFE;color:#3C3489}
+.p-yt{background:#FCEBEB;color:#A32D2D}
+.p-tw{background:#E1F5EE;color:#085041}
+.step-lbl{font-size:10px;color:#888780;text-transform:uppercase;letter-spacing:0.05em}
+.step-val{font-size:12px;font-weight:700;color:#2C2C2A;font-family:'Playfair Display',serif}
+.step-sub{font-size:11px;color:#5F5E5A}
+.st-pill{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:10px;font-size:10px;font-weight:600;width:fit-content;margin-top:3px}
+.s-pend{background:#F1EFE8;color:#5F5E5A}
+.s-edit{background:#FAEEDA;color:#854F0B}
+.s-apro{background:#EAF3DE;color:#3B6D11}
+.s-publ{background:#EEEDFE;color:#3C3489}
+.notes-txt{font-size:11px;color:#5F5E5A;line-height:1.3}
+/* Inspo cell */
+.inspo-cell{display:flex;flex-direction:column;gap:4px;padding:8px 9px;border-right:0.5px solid #D3D1C7}
+.inspo-tag{display:flex;align-items:center;gap:4px;background:#F8F6EC;border:0.5px solid #D3D1C7;border-radius:5px;padding:3px 6px;font-size:10px;color:#2C2C2A;text-decoration:none;transition:all 0.12s;cursor:pointer;max-width:100%;overflow:hidden}
+.inspo-tag:hover{background:#FDF4CC;border-color:#BA7517;color:#7A5200}
+.inspo-tag-label{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+.inspo-tag-del{background:none;border:none;cursor:pointer;color:#B4B2A9;font-size:11px;padding:0;line-height:1;flex-shrink:0;display:flex;align-items:center}
+.inspo-tag-del:hover{color:#A32D2D}
+.inspo-add{display:flex;align-items:center;gap:3px;font-size:10px;color:#B4B2A9;cursor:pointer;padding:2px 4px;border-radius:4px;transition:all 0.12s;border:0.5px dashed transparent;background:transparent;font-family:'Inter',sans-serif}
+.inspo-add:hover{color:#7A5200;border-color:#BA7517;background:#FDF4CC}
+.icon-btn{width:26px;height:26px;border-radius:6px;border:0.5px solid #D3D1C7;background:white;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;transition:all 0.15s;flex-shrink:0;color:#5F5E5A}
+.icon-btn:hover{border-color:#888780;background:#F8F6EC}
+.add-row{padding:10px 14px;display:flex;align-items:center;gap:6px;font-size:12px;color:#888780;cursor:pointer;border-top:0.5px dashed #D3D1C7;transition:background 0.15s}
+.add-row:hover{background:#FFFDF5;color:#2C2C2A}
+.empty-msg{padding:22px;text-align:center;font-size:13px;color:#B4B2A9}
+.confirm-bar{display:none;background:#FCEBEB;border-top:0.5px solid #F09595;padding:10px 14px;align-items:center;justify-content:space-between;gap:10px}
+.confirm-bar.show{display:flex}
+.confirm-txt{font-size:12px;color:#A32D2D;font-weight:500}
+.confirm-btns{display:flex;gap:8px}
+.cbtn{padding:5px 14px;border-radius:6px;font-family:'Inter',sans-serif;font-size:12px;cursor:pointer;border:0.5px solid}
+.cbtn-no{background:white;border-color:#D3D1C7;color:#5F5E5A}
+.cbtn-yes{background:#A32D2D;border-color:#A32D2D;color:white}
+.cbtn-yes:hover{background:#791F1F}
+.event-section{border-top:0.5px solid #D3D1C7;padding:10px 14px;background:#FAFAF7}
+.event-section-title{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:#888780;margin-bottom:8px;display:flex;align-items:center;gap:5px}
+.event-item{display:flex;align-items:center;justify-content:space-between;padding:6px 8px;border-radius:6px;background:white;border:0.5px solid #D3D1C7;margin-bottom:5px}
+.event-item-left{display:flex;align-items:center;gap:7px}
+.event-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.event-name{font-size:12px;font-weight:500;color:#2C2C2A}
+.event-note{font-size:11px;color:#888780}
+.event-del-btn{width:22px;height:22px;border-radius:4px;border:none;background:transparent;cursor:pointer;color:#B4B2A9;font-size:13px;display:flex;align-items:center;justify-content:center;transition:all 0.12s}
+.event-del-btn:hover{background:#FCEBEB;color:#A32D2D}
+.saved-toast{position:fixed;bottom:20px;right:20px;background:#2C2C2A;color:#FDF8E1;padding:8px 16px;border-radius:8px;font-size:12px;display:none;align-items:center;gap:6px;z-index:999}
+.wrap{position:relative}
+.modal-bg{display:none;position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(44,44,42,0.3);z-index:50;align-items:flex-start;justify-content:center;padding-top:24px}
+.modal-bg.open{display:flex}
+.modal{background:#FDF8E1;border-radius:12px;border:0.5px solid #D3D1C7;padding:1.25rem;width:490px;max-width:95%;max-height:85vh;overflow-y:auto}
+.modal-title{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:#2C2C2A;margin-bottom:1rem}
+.edit-badge{display:none;font-size:10px;padding:3px 8px;border-radius:6px;background:#FAEEDA;color:#854F0B;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px}
+.edit-badge.show{display:inline-block}
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.fg-full{grid-column:1/-1}
+.flbl{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:#888780;display:block;margin-bottom:3px}
+.finp{font-family:'Inter',sans-serif;font-size:12px;padding:7px 9px;border-radius:6px;border:0.5px solid #D3D1C7;background:white;color:#2C2C2A;outline:none;width:100%;transition:border-color 0.15s}
+.finp:focus{border-color:#888780}
+.mact{display:flex;gap:8px;margin-top:1rem;justify-content:flex-end}
+.btn-c{padding:7px 16px;border-radius:6px;border:0.5px solid #D3D1C7;background:transparent;font-family:'Inter',sans-serif;font-size:12px;cursor:pointer;color:#5F5E5A}
+.btn-c:hover{border-color:#888780}
+.btn-s{padding:7px 16px;border-radius:6px;border:none;background:#2C2C2A;color:#FDF8E1;font-family:'Inter',sans-serif;font-size:12px;cursor:pointer;font-weight:500}
+/* Inspo modal */
+.inspo-modal-list{display:flex;flex-direction:column;gap:6px;margin-bottom:10px;max-height:160px;overflow-y:auto}
+.inspo-modal-item{display:flex;align-items:center;gap:6px;padding:6px 8px;background:white;border:0.5px solid #D3D1C7;border-radius:6px}
+.inspo-modal-favicon{width:14px;height:14px;border-radius:2px;flex-shrink:0;object-fit:contain}
+.inspo-modal-label{font-size:12px;color:#2C2C2A;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.inspo-modal-url{font-size:10px;color:#888780;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.inspo-modal-del{background:none;border:none;cursor:pointer;color:#B4B2A9;font-size:14px;display:flex;align-items:center;flex-shrink:0}
+.inspo-modal-del:hover{color:#A32D2D}
+.inspo-add-row{display:flex;gap:6px;align-items:flex-end}
+.inspo-add-row .finp{flex:1}
+.inspo-add-btn{padding:7px 12px;border-radius:6px;border:none;background:#2C2C2A;color:#FDF8E1;font-family:'Inter',sans-serif;font-size:12px;cursor:pointer;white-space:nowrap;flex-shrink:0}
+.inspo-add-btn:hover{background:#444441}
+.inspo-empty{font-size:12px;color:#B4B2A9;text-align:center;padding:12px 0}
+.inspo-count{font-size:10px;background:#F1EFE8;color:#5F5E5A;padding:1px 6px;border-radius:8px;font-weight:600;margin-left:4px}
+</style>
+
+<div class="wrap">
+<div class="root">
+
+<div class="hdr">
+  <div class="brand">
+    <div class="monogram">MB</div>
+    <div>
+      <div class="brand-name">Mara Borda</div>
+      <div class="brand-sub">Calendario Editorial</div>
+    </div>
+  </div>
+  <div class="hdr-right">
+    <button class="top-btn" onclick="openEventModal()"><i class="ti ti-star" style="font-size:13px"></i> Evento especial</button>
+    <div class="month-nav">
+      <button class="nav-btn" onclick="changeMonth(-1)"><i class="ti ti-chevron-left"></i></button>
+      <div class="month-label" id="monthLabel"></div>
+      <button class="nav-btn" onclick="changeMonth(1)"><i class="ti ti-chevron-right"></i></button>
+    </div>
+  </div>
+</div>
+
+<div class="stats-row">
+  <div class="stat-card" id="sc-pend" onclick="toggleFilter('Pendiente','sc-pend')">
+    <div class="stat-dot" style="background:#B4B2A9"></div>
+    <div class="stat-num" id="sn-pend" style="color:#5F5E5A">0</div>
+    <div class="stat-lbl">Pendiente</div><i class="ti ti-check stat-check"></i>
+  </div>
+  <div class="stat-card" id="sc-edit" onclick="toggleFilter('En edición','sc-edit')">
+    <div class="stat-dot" style="background:#EF9F27"></div>
+    <div class="stat-num" id="sn-edit" style="color:#854F0B">0</div>
+    <div class="stat-lbl">En edición</div><i class="ti ti-check stat-check"></i>
+  </div>
+  <div class="stat-card" id="sc-apro" onclick="toggleFilter('Aprobado','sc-apro')">
+    <div class="stat-dot" style="background:#639922"></div>
+    <div class="stat-num" id="sn-apro" style="color:#3B6D11">0</div>
+    <div class="stat-lbl">Aprobado</div><i class="ti ti-check stat-check"></i>
+  </div>
+  <div class="stat-card" id="sc-publ" onclick="toggleFilter('Publicado','sc-publ')">
+    <div class="stat-dot" style="background:#7F77DD"></div>
+    <div class="stat-num" id="sn-publ" style="color:#3C3489">0</div>
+    <div class="stat-lbl">Publicado</div><i class="ti ti-check stat-check"></i>
+  </div>
+</div>
+
+<div class="cal-grid-wrap">
+  <div class="cal-dow">
+    <div class="cal-dow-cell">Lun</div><div class="cal-dow-cell">Mar</div><div class="cal-dow-cell">Mié</div>
+    <div class="cal-dow-cell">Jue</div><div class="cal-dow-cell">Vie</div><div class="cal-dow-cell">Sáb</div><div class="cal-dow-cell">Dom</div>
+  </div>
+  <div class="cal-days" id="calDays"></div>
+</div>
+
+<div class="panel" id="flowPanel" style="display:none">
+  <div class="panel-hdr">
+    <div class="panel-title" id="flowPanelTitle">Flujo de trabajo</div>
+    <button class="panel-close" onclick="closePanel()"><i class="ti ti-x"></i></button>
+  </div>
+  <div class="flow-hdr-row">
+    <div class="flow-hdr-cell">Campaña</div>
+    <div class="flow-hdr-cell">Entrega → Edición</div>
+    <div class="flow-hdr-cell">Aprob.</div>
+    <div class="flow-hdr-cell">Public.</div>
+    <div class="flow-hdr-cell">Notas</div>
+    <div class="flow-hdr-cell">✦ Inspo</div>
+    <div class="flow-hdr-cell"></div>
+  </div>
+  <div id="flowRows"></div>
+  <div class="confirm-bar" id="confirmBar">
+    <span class="confirm-txt" id="confirmTxt">¿Eliminar?</span>
+    <div class="confirm-btns">
+      <button class="cbtn cbtn-no" onclick="cancelDelete()">Cancelar</button>
+      <button class="cbtn cbtn-yes" onclick="doDelete()">Sí, eliminar</button>
+    </div>
+  </div>
+  <div id="eventSection"></div>
+  <div class="add-row" onclick="openModal(null)"><i class="ti ti-plus" style="font-size:14px"></i> Agregar publicación</div>
+</div>
+
+</div>
+
+<!-- Modal publicación -->
+<div class="modal-bg" id="modalWrap">
+  <div class="modal">
+    <div class="edit-badge" id="editBadge">Editando</div>
+    <div class="modal-title" id="modalTitle">Nueva publicación</div>
+    <div class="fg">
+      <div class="fg-full"><label class="flbl">Nombre de campaña</label><input class="finp" id="f-camp" placeholder="Ej. Lanzamiento Verano"></div>
+      <div><label class="flbl">Plataforma</label>
+        <select class="finp" id="f-plat"><option>Instagram</option><option>Facebook</option><option>LinkedIn</option><option>TikTok</option><option>YouTube</option><option>X / Twitter</option></select>
+      </div>
+      <div><label class="flbl">Estado</label>
+        <select class="finp" id="f-stat"><option>Pendiente</option><option>En edición</option><option>Aprobado</option><option>Publicado</option></select>
+      </div>
+      <div><label class="flbl">Fecha de entrega</label><input class="finp" id="f-del" type="date"></div>
+      <div><label class="flbl">Período de edición</label><input class="finp" id="f-ed" placeholder="Ej. 8–12 jul"></div>
+      <div><label class="flbl">Fecha de aprobación</label><input class="finp" id="f-app" type="date"></div>
+      <div><label class="flbl">Fecha de publicación</label><input class="finp" id="f-pub" type="date"></div>
+      <div class="fg-full"><label class="flbl">Notas rápidas</label><input class="finp" id="f-notes" placeholder="Detalles..."></div>
+    </div>
+    <div class="mact">
+      <button class="btn-c" onclick="closeModal()">Cancelar</button>
+      <button class="btn-s" onclick="saveEntry()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal inspo -->
+<div class="modal-bg" id="inspoModalWrap">
+  <div class="modal">
+    <div class="modal-title">✦ Inspiración · <span id="inspoModalCampaign" style="font-size:14px;font-weight:400;color:#5F5E5A"></span></div>
+    <p style="font-size:12px;color:#888780;margin-bottom:14px;line-height:1.5">Guarda links de referencias, cuentas que te inspiran, posts, artículos o lo que quieras tener a mano.</p>
+    <div class="inspo-modal-list" id="inspoModalList"></div>
+    <div style="border-top:0.5px solid #D3D1C7;padding-top:12px;margin-top:4px">
+      <label class="flbl" style="margin-bottom:6px">Agregar referencia</label>
+      <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:8px">
+        <input class="finp" id="inspo-label" placeholder="Nombre o descripción  (ej. Cuenta de @maraborda, Post viral de julio…)">
+        <div class="inspo-add-row">
+          <input class="finp" id="inspo-url" placeholder="https://...  (Instagram, Pinterest, TikTok, Notion, Drive…)" onkeydown="if(event.key==='Enter')addInspoLink()">
+          <button class="inspo-add-btn" onclick="addInspoLink()"><i class="ti ti-plus" style="font-size:13px"></i> Añadir</button>
+        </div>
+      </div>
+    </div>
+    <div class="mact" style="border-top:0.5px solid #D3D1C7;padding-top:10px;margin-top:0">
+      <button class="btn-c" onclick="closeInspoModal()">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal evento especial -->
+<div class="modal-bg" id="eventModalWrap">
+  <div class="modal">
+    <div class="modal-title">✦ Evento especial</div>
+    <div class="fg">
+      <div class="fg-full"><label class="flbl">Nombre del evento</label><input class="finp" id="ev-name" placeholder="Ej. Reunión de equipo, Día de lanzamiento…"></div>
+      <div><label class="flbl">Fecha</label><input class="finp" id="ev-date" type="date"></div>
+      <div><label class="flbl">Color</label>
+        <select class="finp" id="ev-color">
+          <option value="#9B7FD4">Morado</option><option value="#E07A2F">Naranja</option>
+          <option value="#3B8C6E">Verde</option><option value="#C0392B">Rojo</option>
+          <option value="#2471A3">Azul</option><option value="#7D6608">Dorado</option>
+        </select>
+      </div>
+      <div class="fg-full"><label class="flbl">Nota (opcional)</label><input class="finp" id="ev-note" placeholder="Detalle…"></div>
+    </div>
+    <div class="mact">
+      <button class="btn-c" onclick="closeEventModal()">Cancelar</button>
+      <button class="btn-s" onclick="saveEvent()">Guardar evento</button>
+    </div>
+  </div>
+</div>
+
+<div class="saved-toast" id="toast"><i class="ti ti-check" style="font-size:13px"></i> Guardado</div>
+</div>
+
+<script>
+const MONTHS=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+const MON_S=['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+const SDOT={'Pendiente':'#B4B2A9','En edición':'#EF9F27','Aprobado':'#639922','Publicado':'#7F77DD'};
+const SCLS={'Pendiente':'s-pend','En edición':'s-edit','Aprobado':'s-apro','Publicado':'s-publ'};
+const PCLS={'Instagram':'p-ig','Facebook':'p-fb','LinkedIn':'p-li','TikTok':'p-tk','YouTube':'p-yt','X / Twitter':'p-tw'};
+const CHIP_CLS={'Publicado':'chip-pub','Aprobado':'chip-apv','En edición':'chip-edi','Pendiente':'chip-pen'};
+const CHIP_ICO={'Publicado':'ti-send','Aprobado':'ti-circle-check','En edición':'ti-pencil','Pendiente':'ti-clock'};
+
+const today=new Date();
+let curYear=today.getFullYear(),curMonth=today.getMonth();
+let activeFilter=null,selectedDay=null,editingIdx=null,pendingDeleteIdx=null,inspoEntryIdx=null;
+
+const DEF=[
+  {campaign:'Lanzamiento Verano',platform:'Instagram',delivery:'2025-07-08',editPeriod:'8–12 jul',approval:'2025-07-13',publish:'2025-07-15',notes:'Colores cálidos, carrusel',status:'En edición',inspo:[]},
+  {campaign:'Oferta Socios',platform:'Facebook',delivery:'2025-07-10',editPeriod:'10–13 jul',approval:'2025-07-14',publish:'2025-07-16',notes:'CTA a landing page',status:'Aprobado',inspo:[{label:'Referencia visual',url:'https://pinterest.com'},{label:'Tono de copy',url:'https://notion.so'}]},
+  {campaign:'Reporte Impacto Q2',platform:'LinkedIn',delivery:'2025-07-05',editPeriod:'5–8 jul',approval:'2025-07-09',publish:'2025-07-10',notes:'Versión PDF adjunta',status:'Publicado',inspo:[]},
+  {campaign:'Reto #SaborDurazno',platform:'TikTok',delivery:'2025-07-14',editPeriod:'14–18 jul',approval:'2025-07-19',publish:'2025-07-21',notes:'Máx 30s, música trending',status:'Pendiente',inspo:[{label:'TikTok inspo',url:'https://tiktok.com'}]},
+  {campaign:'Tutorial Producto',platform:'YouTube',delivery:'2025-07-18',editPeriod:'18–22 jul',approval:'2025-07-23',publish:'2025-07-25',notes:'Subtítulos EN y ES',status:'Pendiente',inspo:[]},
+  {campaign:'Opinión Sector IA',platform:'X / Twitter',delivery:'2025-07-12',editPeriod:'12–14 jul',approval:'2025-07-15',publish:'2025-07-16',notes:'Thread 5 tweets',status:'En edición',inspo:[]},
+  {campaign:'Flash Sale Agosto',platform:'Instagram',delivery:'2025-08-01',editPeriod:'1–4 ago',approval:'2025-08-05',publish:'2025-08-07',notes:'Descuento 30%',status:'Pendiente',inspo:[]},
+  {campaign:'Newsletter Mensual',platform:'LinkedIn',delivery:'2025-07-28',editPeriod:'28–30 jul',approval:'2025-07-31',publish:'2025-08-01',notes:'Resumen del mes',status:'Pendiente',inspo:[]}
+];
+
+function loadData(){
+  try{
+    const e=localStorage.getItem('mb-entries-v2');
+    const ev=localStorage.getItem('mb-events-v2');
+    return{entries:e?JSON.parse(e):JSON.parse(JSON.stringify(DEF)),events:ev?JSON.parse(ev):[]};
+  }catch(_){return{entries:JSON.parse(JSON.stringify(DEF)),events:[]};}
+}
+function saveData(){
+  try{localStorage.setItem('mb-entries-v2',JSON.stringify(entries));localStorage.setItem('mb-events-v2',JSON.stringify(events));showToast();}catch(_){}
+}
+const ld=loadData();
+let entries=ld.entries.map(e=>({...e,inspo:e.inspo||[]}));
+let events=ld.events;
+
+function showToast(){const t=document.getElementById('toast');t.style.display='flex';clearTimeout(t._t);t._t=setTimeout(()=>t.style.display='none',2000);}
+function fmt(d){if(!d)return'—';const p=d.split('-');return`${parseInt(p[2])} ${MON_S[parseInt(p[1])-1]}`;}
+function dsOf(y,m,d){return`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;}
+function getForDate(y,m,d){const ds=dsOf(y,m,d);return entries.map((e,i)=>({e,i})).filter(({e})=>e.publish===ds||e.delivery===ds||e.approval===ds);}
+function getEventsForDate(ds){return events.filter(ev=>ev.date===ds);}
+
+function faviconUrl(url){try{return`https://www.google.com/s2/favicons?sz=32&domain_url=${encodeURIComponent(new URL(url).hostname)}`;}catch(_){return'';}}
+function domainLabel(url){try{return new URL(url).hostname.replace('www.','');}catch(_){return url.slice(0,20);}}
+
+// ————— INSPO CELL —————
+function inspoCellHtml(e,realIdx){
+  const inspo=e.inspo||[];
+  const count=inspo.length;
+  let inner='';
+  if(count>0){
+    inner=inspo.slice(0,2).map((lk,li)=>{
+      const fav=faviconUrl(lk.url);
+      const label=lk.label||domainLabel(lk.url);
+      return`<a class="inspo-tag" href="${lk.url}" target="_blank" onclick="event.stopPropagation()" title="${lk.url}">
+        ${fav?`<img class="inspo-modal-favicon" src="${fav}" onerror="this.style.display='none'">`:'<i class="ti ti-link" style="font-size:10px;flex-shrink:0"></i>'}
+        <span class="inspo-tag-label">${label.length>16?label.slice(0,15)+'…':label}</span>
+      </a>`;
+    }).join('');
+    if(count>2) inner+=`<span class="inspo-add" onclick="event.stopPropagation();openInspoModal(${realIdx})">+${count-2} más</span>`;
+  }
+  inner+=`<button class="inspo-add" onclick="event.stopPropagation();openInspoModal(${realIdx})"><i class="ti ti-plus" style="font-size:10px"></i> ${count===0?'Añadir inspo':'Añadir'}</button>`;
+  return`<div class="inspo-cell">${inner}</div>`;
+}
+
+function rowHtml(e,realIdx){
+  const pc=PCLS[e.platform]||'p-ig';
+  const sc=SCLS[e.status]||'s-pend';
+  const inspoCount=(e.inspo||[]).length;
+  return`<div class="flow-row" id="row-${realIdx}">
+    <div class="flow-cell"><span class="fc-name">${e.campaign}</span><span class="plat-pill ${pc}">${e.platform}</span></div>
+    <div class="flow-cell" style="flex-direction:row;align-items:center;gap:5px;flex-wrap:wrap">
+      <div style="display:flex;flex-direction:column;gap:1px"><span class="step-lbl">Entrega</span><span class="step-val">${fmt(e.delivery)}</span></div>
+      <span style="color:#B4B2A9;font-size:11px">→</span>
+      <div style="display:flex;flex-direction:column;gap:1px"><span class="step-lbl">Edición</span><span class="step-sub">${e.editPeriod||'—'}</span></div>
+    </div>
+    <div class="flow-cell"><span class="step-lbl">Aprob.</span><span class="step-val">${fmt(e.approval)}</span></div>
+    <div class="flow-cell">
+      <span class="step-lbl">Public.</span><span class="step-val" style="color:#3C3489">${fmt(e.publish)}</span>
+      <span class="st-pill ${sc}"><span style="width:6px;height:6px;border-radius:50%;background:${SDOT[e.status]};display:inline-block"></span>${e.status}</span>
+    </div>
+    <div class="flow-cell"><span class="notes-txt">${e.notes||'—'}</span></div>
+    ${inspoCellHtml(e,realIdx)}
+    <div class="flow-cell">
+      <button class="icon-btn" onclick="openModal(${realIdx})" title="Editar"><i class="ti ti-edit"></i></button>
+      <button class="icon-btn" onclick="askDelete(${realIdx})" title="Eliminar" style="color:#A32D2D"><i class="ti ti-trash"></i></button>
+    </div>
+  </div>`;
+}
+
+function showFlow(pairs,title,ds){
+  document.getElementById('confirmBar').classList.remove('show');
+  pendingDeleteIdx=null;
+  document.getElementById('flowPanelTitle').textContent=title;
+  document.getElementById('flowRows').innerHTML=pairs.length
+    ?pairs.map(({e,i})=>rowHtml(e,i)).join('')
+    :`<div class="empty-msg">Sin publicaciones — usa el botón de abajo para agregar una</div>`;
+  document.getElementById('eventSection').innerHTML=ds?evSectionHtml(ds):'';
+  document.getElementById('flowPanel').style.display='block';
+}
+
+function evSectionHtml(ds){
+  const evts=getEventsForDate(ds);if(!evts.length)return'';
+  return`<div class="event-section"><div class="event-section-title"><i class="ti ti-star" style="font-size:11px"></i> Eventos especiales</div>
+    ${evts.map(ev=>{const gi=events.indexOf(ev);return`<div class="event-item"><div class="event-item-left"><div class="event-dot" style="background:${ev.color}"></div><div><div class="event-name">${ev.name}</div>${ev.note?`<div class="event-note">${ev.note}</div>`:''}</div></div><button class="event-del-btn" onclick="deleteEvent(${gi})"><i class="ti ti-x"></i></button></div>`;}).join('')}
+  </div>`;
+}
+
+function renderCal(){
+  document.getElementById('monthLabel').textContent=`${MONTHS[curMonth]} ${curYear}`;
+  const first=new Date(curYear,curMonth,1).getDay();
+  const off=(first===0)?6:first-1;
+  const dim=new Date(curYear,curMonth+1,0).getDate();
+  const dip=new Date(curYear,curMonth,0).getDate();
+  const rows=Math.ceil((off+dim)/7)*7;
+  let html='';
+  for(let i=0;i<rows;i++){
+    let d,m,y,oth=false;
+    if(i<off){d=dip-off+i+1;m=curMonth-1;y=curYear;oth=true;}
+    else if(i>=off+dim){d=i-off-dim+1;m=curMonth+1;y=curYear;oth=true;}
+    else{d=i-off+1;m=curMonth;y=curYear;}
+    const isTod=d===today.getDate()&&m===today.getMonth()&&y===today.getFullYear();
+    const isSel=selectedDay&&d===selectedDay.d&&m===selectedDay.m&&y===selectedDay.y;
+    const ds=dsOf(y,m,d);
+    const pairs=oth?[]:getForDate(y,m,d);
+    const evts=oth?[]:getEventsForDate(ds);
+    let cls='cal-day'+(oth?' other-month':'')+(isTod?' today':'')+(isSel?' selected':'');
+    const dn=isTod?`<div class="day-num">${d}</div>`:`<span class="day-num">${d}</span>`;
+    let chips='';
+    if(!oth&&(pairs.length||evts.length)){
+      chips='<div class="day-items">';
+      let shown=0;
+      for(let pi=0;pi<pairs.length&&shown<2;pi++){
+        const e=pairs[pi].e;const cc=CHIP_CLS[e.status]||'chip-pen';const ic=CHIP_ICO[e.status]||'ti-clock';
+        const lbl=e.campaign.length>13?e.campaign.slice(0,12)+'…':e.campaign;
+        chips+=`<span class="day-chip ${cc}"><i class="ti ${ic}" style="font-size:9px;flex-shrink:0"></i>${lbl}</span>`;shown++;
+      }
+      for(let ei=0;ei<evts.length&&shown<3;ei++){
+        const ev=evts[ei];const lbl=ev.name.length>13?ev.name.slice(0,12)+'…':ev.name;
+        chips+=`<span class="day-chip chip-evt" style="border-left:2px solid ${ev.color}"><i class="ti ti-star" style="font-size:9px;color:${ev.color};flex-shrink:0"></i>${lbl}</span>`;shown++;
+      }
+      const extra=(pairs.length+evts.length)-shown;
+      if(extra>0)chips+=`<span class="more-tag">+${extra} más</span>`;
+      chips+='</div>';
+    }
+    html+=`<div class="${cls}" onclick="selectDay(${y},${m},${d})">${dn}${chips}</div>`;
+  }
+  document.getElementById('calDays').innerHTML=html;
+  updateStats();
+}
+
+function updateStats(){
+  const c={'Pendiente':0,'En edición':0,'Aprobado':0,'Publicado':0};
+  entries.forEach(e=>c[e.status]++);
+  ['pend','edit','apro','publ'].forEach((k,i)=>document.getElementById('sn-'+k).textContent=c[['Pendiente','En edición','Aprobado','Publicado'][i]]);
+}
+
+function getActivePairs(){
+  if(selectedDay)return getForDate(selectedDay.y,selectedDay.m,selectedDay.d);
+  if(activeFilter)return entries.map((e,i)=>({e,i})).filter(({e})=>e.status===activeFilter);
+  return[];
+}
+function getActiveTitle(){
+  if(selectedDay)return`${selectedDay.d} de ${MONTHS[selectedDay.m]}`;
+  if(activeFilter)return`Flujo: ${activeFilter}`;
+  return'';
+}
+function getActiveDs(){return selectedDay?dsOf(selectedDay.y,selectedDay.m,selectedDay.d):null;}
+
+function refreshPanel(){
+  if(document.getElementById('flowPanel').style.display==='none')return;
+  showFlow(getActivePairs(),getActiveTitle(),getActiveDs());
+}
+
+function selectDay(y,m,d){
+  selectedDay={y,m,d};activeFilter=null;
+  ['sc-pend','sc-edit','sc-apro','sc-publ'].forEach(c=>document.getElementById(c).classList.remove('active'));
+  showFlow(getForDate(y,m,d),`${d} de ${MONTHS[m]}`,dsOf(y,m,d));
+  renderCal();
+}
+function toggleFilter(status,cid){
+  const all=['sc-pend','sc-edit','sc-apro','sc-publ'];
+  if(activeFilter===status){activeFilter=null;all.forEach(c=>document.getElementById(c).classList.remove('active'));closePanel();}
+  else{
+    activeFilter=status;selectedDay=null;
+    all.forEach(c=>document.getElementById(c).classList.remove('active'));
+    document.getElementById(cid).classList.add('active');
+    showFlow(entries.map((e,i)=>({e,i})).filter(({e})=>e.status===status),`Flujo: ${status}`,null);
+    renderCal();
+  }
+}
+
+function askDelete(idx){
+  pendingDeleteIdx=idx;
+  document.getElementById('confirmTxt').textContent=`¿Eliminar "${entries[idx].campaign}"?`;
+  document.getElementById('confirmBar').classList.add('show');
+  const r=document.getElementById(`row-${idx}`);if(r)r.style.background='#FFF5F5';
+}
+function cancelDelete(){
+  if(pendingDeleteIdx!==null){const r=document.getElementById(`row-${pendingDeleteIdx}`);if(r)r.style.background='';}
+  pendingDeleteIdx=null;document.getElementById('confirmBar').classList.remove('show');
+}
+function doDelete(){
+  if(pendingDeleteIdx===null)return;
+  entries.splice(pendingDeleteIdx,1);pendingDeleteIdx=null;
+  document.getElementById('confirmBar').classList.remove('show');
+  saveData();renderCal();refreshPanel();
+}
+
+function closePanel(){document.getElementById('flowPanel').style.display='none';selectedDay=null;pendingDeleteIdx=null;renderCal();}
+
+function openModal(idx){
+  editingIdx=idx;
+  const badge=document.getElementById('editBadge');
+  if(idx!==null){
+    const e=entries[idx];
+    document.getElementById('f-camp').value=e.campaign;
+    document.getElementById('f-plat').value=e.platform;
+    document.getElementById('f-stat').value=e.status;
+    document.getElementById('f-del').value=e.delivery||'';
+    document.getElementById('f-ed').value=e.editPeriod||'';
+    document.getElementById('f-app').value=e.approval||'';
+    document.getElementById('f-pub').value=e.publish||'';
+    document.getElementById('f-notes').value=e.notes||'';
+    badge.classList.add('show');document.getElementById('modalTitle').textContent='Editar publicación';
+  } else {
+    ['f-camp','f-del','f-ed','f-app','f-pub','f-notes'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('f-plat').selectedIndex=0;document.getElementById('f-stat').selectedIndex=0;
+    badge.classList.remove('show');document.getElementById('modalTitle').textContent='Nueva publicación';
+    if(selectedDay){document.getElementById('f-pub').value=dsOf(selectedDay.y,selectedDay.m,selectedDay.d);}
+  }
+  document.getElementById('modalWrap').classList.add('open');
+}
+function closeModal(){document.getElementById('modalWrap').classList.remove('open');editingIdx=null;}
+
+function saveEntry(){
+  const g=id=>document.getElementById(id).value.trim();
+  if(!g('f-camp')){document.getElementById('f-camp').focus();return;}
+  const obj={campaign:g('f-camp'),platform:g('f-plat'),delivery:g('f-del'),editPeriod:g('f-ed'),approval:g('f-app'),publish:g('f-pub'),notes:g('f-notes'),status:g('f-stat'),inspo:editingIdx!==null?(entries[editingIdx].inspo||[]):[]};
+  if(editingIdx!==null){entries[editingIdx]=obj;}else{entries.push(obj);}
+  closeModal();saveData();renderCal();refreshPanel();
+}
+
+// ——— INSPO MODAL ———
+function openInspoModal(idx){
+  inspoEntryIdx=idx;
+  document.getElementById('inspoModalCampaign').textContent=entries[idx].campaign;
+  document.getElementById('inspo-label').value='';
+  document.getElementById('inspo-url').value='';
+  renderInspoList();
+  document.getElementById('inspoModalWrap').classList.add('open');
+}
+function closeInspoModal(){document.getElementById('inspoModalWrap').classList.remove('open');inspoEntryIdx=null;refreshPanel();}
+
+function renderInspoList(){
+  const list=document.getElementById('inspoModalList');
+  const inspo=entries[inspoEntryIdx].inspo||[];
+  if(!inspo.length){list.innerHTML=`<div class="inspo-empty">Aún no hay referencias — añade la primera ✦</div>`;return;}
+  list.innerHTML=inspo.map((lk,i)=>{
+    const fav=faviconUrl(lk.url);
+    const label=lk.label||domainLabel(lk.url);
+    return`<div class="inspo-modal-item">
+      ${fav?`<img class="inspo-modal-favicon" src="${fav}" onerror="this.style.display='none'">`:'<i class="ti ti-link" style="font-size:12px;color:#888780;flex-shrink:0"></i>'}
+      <div style="flex:1;overflow:hidden">
+        <div class="inspo-modal-label">${label}</div>
+        <div class="inspo-modal-url">${lk.url}</div>
+      </div>
+      <a href="${lk.url}" target="_blank" style="color:#888780;font-size:13px;display:flex;align-items:center;margin-right:4px" title="Abrir" onclick="event.stopPropagation()"><i class="ti ti-external-link"></i></a>
+      <button class="inspo-modal-del" onclick="removeInspoLink(${i})" title="Eliminar"><i class="ti ti-x"></i></button>
+    </div>`;
+  }).join('');
+}
+
+function addInspoLink(){
+  const url=document.getElementById('inspo-url').value.trim();
+  const label=document.getElementById('inspo-label').value.trim();
+  if(!url){document.getElementById('inspo-url').focus();return;}
+  let finalUrl=url;
+  if(!/^https?:\/\//i.test(finalUrl))finalUrl='https://'+finalUrl;
+  if(!entries[inspoEntryIdx].inspo)entries[inspoEntryIdx].inspo=[];
+  entries[inspoEntryIdx].inspo.push({label:label||domainLabel(finalUrl),url:finalUrl});
+  document.getElementById('inspo-url').value='';
+  document.getElementById('inspo-label').value='';
+  saveData();renderInspoList();
+}
+
+function removeInspoLink(li){
+  entries[inspoEntryIdx].inspo.splice(li,1);
+  saveData();renderInspoList();
+}
+
+// ——— EVENTOS ———
+function openEventModal(){
+  if(selectedDay){document.getElementById('ev-date').value=dsOf(selectedDay.y,selectedDay.m,selectedDay.d);}
+  else{document.getElementById('ev-date').value='';}
+  document.getElementById('ev-name').value='';document.getElementById('ev-note').value='';
+  document.getElementById('ev-color').selectedIndex=0;
+  document.getElementById('eventModalWrap').classList.add('open');
+}
+function closeEventModal(){document.getElementById('eventModalWrap').classList.remove('open');}
+function saveEvent(){
+  const name=document.getElementById('ev-name').value.trim();
+  const date=document.getElementById('ev-date').value;
+  if(!name){document.getElementById('ev-name').focus();return;}
+  if(!date){document.getElementById('ev-date').focus();return;}
+  events.push({name,date,color:document.getElementById('ev-color').value,note:document.getElementById('ev-note').value.trim()});
+  closeEventModal();saveData();renderCal();refreshPanel();
+}
+function deleteEvent(idx){events.splice(idx,1);saveData();renderCal();refreshPanel();}
+
+function changeMonth(dir){
+  curMonth+=dir;
+  if(curMonth>11){curMonth=0;curYear++;}
+  if(curMonth<0){curMonth=11;curYear--;}
+  closePanel();activeFilter=null;
+  ['sc-pend','sc-edit','sc-apro','sc-publ'].forEach(c=>document.getElementById(c).classList.remove('active'));
+  renderCal();
+}
+
+renderCal();
+</script>
